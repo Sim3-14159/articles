@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.5">
+    <title>Markdown + highlight.js Enhanced</title>
+
+    <!-- highlight.js theme + core + auto-loader -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <!-- marked + heading-id plugin (load order matters) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@5.1.2/lib/marked.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked-gfm-heading-id@3.0.4/lib/index.umd.min.js"></script>
+
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
+    <style>
+    body {
+        background: #1e1e1e;
+        color: #eee;
+        font-family: sans-serif;
+        padding: 2rem;
+        line-height: 1.6;
+    }
+
+    .code-block {
+        background: #444;
+        position: relative;
+        margin: 2rem 0;
+        border-radius: 5px;
+    }
+
+    .code-block .lang-label {
+        position: absolute;
+        top: 6px;
+        left: 10px;
+        font-size: .75rem;
+        font-family: monospace;
+        color: #ccc;
+        opacity: .75;
+        text-transform: uppercase;
+        pointer-events: none;
+    }
+
+    .code-block .copy-btn {
+        position: absolute;
+        top: 6px;
+        right: 10px;
+        font-size: .75rem;
+        padding: 2px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        background: rgba(255, 255, 255, .1);
+        border: 1px solid rgba(255, 255, 255, .1);
+        color: #eee;
+    }
+
+    .code-block .copy-btn:hover {
+        background: rgba(255, 255, 255, .3);
+    }
+
+    .code-block pre {
+        padding-top: 2rem !important;
+        border-radius: 6px;
+    }
+
+    pre code {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        max-height: 400px;
+        overflow: auto;
+    }
+
+    .copy-btn img {
+        height: 1em
+    }
+
+    :not(pre) > code {
+        background-color: rgba(255, 255, 255, 0.1);
+        /* Semi-transparent background */
+        backdrop-filter: blur(10px);
+        /* Apply a 10px blur to the background */
+        border-radius: 2px;
+        padding: 2px;
+    }
+
+    mark {
+        border-radius: 2px;
+    }
+
+    span.filename {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        white-space: nowrap;
+        font-weight: 100;
+    }/* horizontal lines */
+
+    span.filename::before, span.filename::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: grey;
+    }
+
+    span.filename {
+        margin-bottom: -25px;
+    }/*---------------------------------- HLJS --------------------*/
+
+    .hljs-strong {
+        color: #61aeee;
+    }/* single quote */
+
+    .hljs-string_single {
+        color: #f0a0a0;
+    }
+
+    blockquote {
+        margin-left: 0px;
+        border-left-width: 3px;
+        border-left-style: solid;
+        border-left-color: grey;
+        padding: 0;
+        padding-left: 1em;
+        color: grey;
+    }
+    </style>
+
+    <style> /********* BLOCKQUOTE STYLING *********/
+        /* ---------- base blockquote (no class = untouched) ---------- */
+        blockquote {
+            position: relative;
+            margin: 1em 0;
+            padding: 0;
+            /* default, compact padding */
+            padding-left: 1em;
+        }
+        
+        /* ---------- call-outs get extra top-padding so icon can sit above ---------- */
+        blockquote:is(.note, .warning, .tip, .important, .caution) {
+            padding-top: 1em;
+            padding-right: 10px;
+            overflow: visible;
+            /* let the icon poke out */
+        }
+        
+        /* ---------- shared icon shell ---------- */
+        blockquote:is(.note, .warning, .tip, .important, .caution)::before {
+            content: "";
+            position: absolute;
+            top: 0.3em;
+            /* slightly above the text block */
+            left: 0.7em;
+            width: 16px;
+            height: 16px;
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            display: block;
+        }
+        
+        blockquote.note, blockquote.warning, blockquote.tip, blockquote.caution, blockquote.important {
+            border-radius: 3px;
+            color: white;
+        }
+        
+        blockquote.quote {
+            paddding: 0;
+            padding-right: 1em;
+            padding-left: 1em;
+            border-radius: 3px;
+            border: 2px solid rgba(77, 70, 70, 0.6);
+            background-color: rgba(61, 50, 50, 0.4);
+        }
+        
+        blockquote.quote::before {
+            content: "“";
+            font-size: 3em;
+            opacity: 0.5;
+            line-height: 0px;
+            vertical-align: bottom;
+        }
+        
+        blockquote.quote::after {
+            content: "”";
+            font-size: 3em;
+            opacity: 0.5;
+            line-height: 0px; /* allows it to be close to content */
+            vertical-align: bottom;
+        }
+        
+        blockquote.note {
+            border: 3px solid rgba(50, 50, 255, 0.8);
+            background-color: rgba(50, 50, 255, 0.2);
+        }
+        
+        blockquote.caution {
+            border: 3px solid rgba(255, 50, 50, 0.8);
+            background-color: rgba(255, 50, 50, 0.2);
+        }
+        
+        blockquote.tip {
+            border: 3px solid rgba(50, 255, 50, 0.8);
+            background-color: rgba(50, 255, 50, 0.2);
+        }
+        
+        blockquote.warning {
+            border: 3px solid rgba(255, 255, 50, 0.8);
+            background-color: rgba(255, 255, 50, 0.2);
+        }
+        
+        blockquote.important {
+            border: 3px solid rgba(255, 50, 255, 0.8);
+            background-color: rgba(255, 50, 255, 0.2);
+        }
+        
+        /* Map each blockquote class to the new SVGs */
+blockquote.note::before {
+    background-color: #3b82f6;       
+    mask: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/></svg>');
+}
+
+blockquote.tip::before {
+    background-color: #22c55e;        
+    mask: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.328 3.259-.095.115-.184.22-.268.319-.207.245-.383.453-.541.681-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"/></svg>');
+}
+
+blockquote.warning::before {
+    background-color: #eab308;   
+    mask: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>');
+}
+
+blockquote.caution::before {
+    background-color: #ef4444;
+    mask: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4.47.22A.749.749 0 0 1 5 0h6c.199 0 .389.079.53.22l4.25 4.25c.141.14.22.331.22.53v6a.749.749 0 0 1-.22.53l-4.25 4.25A.749.749 0 0 1 11 16H5a.749.749 0 0 1-.53-.22L.22 11.53A.749.749 0 0 1 0 11V5c0-.199.079-.389.22-.53Zm.84 1.28L1.5 5.31v5.38l3.81 3.81h5.38l3.81-3.81V5.31L10.69 1.5ZM8 4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>');
+}
+
+blockquote.important::before {
+    background-color: rebeccapurple;         
+    mask: url('data:image/svg+xml;utf8,\
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6.5a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm7 2.25v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 9a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/></svg>');
+}
+    </style>
+
+</head>
+<body>
+    <textarea id="markdown-source" style="resize: none; display: inline; width: 95%; zoom: 120%;" rows="17" placeholder="Write your Markdown..."></textarea>
+    <button onclick="makeMD()">Go</button>
+
+    <div id="content"></div>
+
+    <script>
+    function makeMD() {
+    console.info("Rendering Markdown");
+
+    /* 1. one-time setup ---------------------------------------------------- */
+    if (!window.markedReady) {
+        // heading ids
+        marked.use(markedGfmHeadingId.gfmHeadingId());
+        // allow raw HTML
+        marked.use({
+            sanitize: false,
+            sanitizeHtml: false
+        });
+
+        /* -------------------------
+           Superscript & Subscript
+        ------------------------- */
+        marked.use({
+            extensions: [{
+                name: 'supsub',
+                level: 'inline',
+                start(src) {
+                    return src.search(/[\^~]/);
+                },
+                tokenizer(src) {
+                    const sup = /^\^([^^~\s]+)\^/.exec(src);
+                    const sub = /^~([^~^\s]+)~/.exec(src);
+                    if (!sup && !sub) return;
+                    const raw = (sup || sub)[0];
+                    const text = (sup || sub)[1];
+                    return {
+                        type: 'supsub',
+                        raw,
+                        text,
+                        sup: !!sup
+                    };
+                },
+                renderer(token) {
+                    return token.sup ? `<sup>${token.text}</sup>` : `<sub>${token.text}</sub>`;
+                }
+            }]
+        });
+
+        /* -------------------------
+           Highlight ==text==
+        ------------------------- */
+        marked.use({
+            extensions: [{
+                name: 'mark',
+                level: 'inline',
+                start(src) { return src.indexOf('=='); },
+                tokenizer(src) {
+                    const m = /^==([^=\n]+)==/.exec(src);
+                    if (!m) return;
+                    return { type: 'mark', raw: m[0], text: m[1] };
+                },
+                renderer(token) { return `<mark>${token.text}</mark>`; }
+            }]
+        });
+
+        /* -------------------------
+           Filename ---text---
+        ------------------------- */
+        marked.use({
+            extensions: [{
+                name: 'filename',
+                level: 'inline',
+                start(src) { return src.indexOf('---'); },
+                tokenizer(src) {
+                    const m = /^---([^=\n]+)---/.exec(src);
+                    if (!m) return;
+                    return { type: 'filename', raw: m[0], text: m[1] };
+                },
+                renderer(token) { return `<span class="filename">${token.text}</span>`; }
+            }]
+        });
+
+        /* -------------------------
+           Note blocks > [!NOTE]
+        ------------------------- */
+        marked.use({
+            extensions: [{
+                name: 'noteBlock',
+                level: 'block',
+                start(src) { return src.match(/^> \[!\w+\]/m)?.index; },
+                tokenizer(src) {
+                    const rule = /^> \[!(\w+)\]\s*\n((?:>.*\n?)*)/;
+                    const match = rule.exec(src);
+                    if (!match) return;
+
+                    const [, type, content] = match;
+                    const text = content
+                        .split('\n')
+                        .map(line => line.replace(/^>\s?/, ''))
+                        .join('\n');
+
+                    return {
+                        type: 'noteBlock',
+                        raw: match[0],
+                        text,
+                        noteType: type.toLowerCase()
+                    };
+                },
+                renderer(token) {
+                    const innerHtml = marked.parse(token.text).trim();
+                    return `<blockquote class="${token.noteType}">${innerHtml}</blockquote>`;
+                }
+            }]
+        });
+
+        window.markedReady = true;
+    }
+
+    const src = document.getElementById("markdown-source").value;
+
+    /* 2. hide math – skip code fences -------------------------------------- */
+    const stash = [];
+    let id = 0;
+
+    // split into [prose, fence, prose, fence, …]
+    const parts = src.split(/(^```[\s\S]*?^```)/gm);
+    for (let i = 0; i < parts.length; i += 2) {
+        // only prose chunks
+        parts[i] = parts[i]
+        .replace(/(\$\$([^$]+)\$\$)/g, (_, __, math) => {
+            const key = `%%MATH_BLOCK_${id++}%%`;
+            stash.push({ key, tex: math, display: true });
+            return key;
+        })
+        .replace(/(^|[^$])\$([^$\n]+)\$/g, (m, lead, math) => {
+            const key = `%%MATH_INLINE_${id++}%%`;
+            stash.push({ key, tex: math, display: false });
+            return lead + key;
+        });
+    }
+    const safe = parts.join('');
+
+    /* 3. markdown → HTML --------------------------------------------------- */
+    let html = marked.parse(safe);
+
+    /* 4. restore KaTeX ----------------------------------------------------- */
+    stash.forEach(({key, tex, display}) => {
+        html = html.replace(key,
+            katex.renderToString(tex, { displayMode: display, throwOnError: false })
+        );
+    });
+
+    /* 5. push to page ------------------------------------------------------ */
+    document.getElementById("content").innerHTML = html;
+
+    /* 6. highlight.js + copy buttons -------------------------------------- */
+    function enhanceCodeBlocks() {
+        document.querySelectorAll('pre code').forEach(code => {
+            if (code.closest('.katex, .katex-display')) return;
+
+            const originalClass = code.className;
+            const userLang = (originalClass.match(/language-([^\s]+)/) || [])[1];
+
+            if (userLang && !hljs.getLanguage(userLang)) {
+                code.classList.remove('language-' + userLang);
+            }
+
+            hljs.highlightElement(code);
+
+            let labelText = (userLang||code.result?.language || 'text').toUpperCase().replace("-", " ");
+            const replacements = { "CPP":"C++","PY":"PYTHON","JS":"JAVASCRIPT","INO":"ARDUINO","MD":"MARKDOWN" };
+            if (replacements[labelText]) labelText = replacements[labelText];
+
+            const wrap = document.createElement('div');
+            wrap.className = 'code-block';
+            wrap.setAttribute('data-lang', labelText);
+
+            const label = document.createElement('span');
+            label.className = 'lang-label';
+            label.textContent = labelText;
+
+            const btn = document.createElement('button');
+            btn.className = 'copy-btn';
+            btn.innerHTML = `<img src="https://img.icons8.com/?size=50&id=86216&format=png">`;
+            btn.onclick = () => {
+                navigator.clipboard.writeText(code.innerText.slice(0, -1)).then(() => {
+                    btn.innerHTML = "<img src='https://img.icons8.com/00ff00/50/checkmark'>";
+                    setTimeout(() => btn.innerHTML = `<img src="https://img.icons8.com/?size=50&id=86216&format=png">`, 1500);
+                });
+            };
+
+            const pre = code.parentElement;
+            pre.parentElement.insertBefore(wrap, pre);
+            wrap.append(label, btn, pre);
+        });
+    }
+
+    // remove outer <p> for filenames
+    function filenamePretty() {
+        document.querySelectorAll("p").forEach(p => {
+            const span = p.querySelector("span.filename");
+            if (span) p.replaceWith(span);
+        });
+    }
+
+    enhanceCodeBlocks();
+    filenamePretty();
+}
+
+    </script>
+
+</body>
+</html>
