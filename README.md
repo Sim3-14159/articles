@@ -17,3 +17,4 @@
 
 > ## 📋 License
 > The source code in this repository is released under the **Sim3-14159 Articles License** <sub>(my custom license, based off of the [MIT License](https://opensource.org/license/mit))</sub> (see [license](LICENSE.md)). However, <mark>all Markdown articles inside the `articles/` directory are fully protected</mark> and may not be copied, distributed, or reused in any form without explicit written permission.
+
