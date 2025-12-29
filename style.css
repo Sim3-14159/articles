@@ -1,5 +1,5 @@
 html {
-        zoom: 150%;
+        zoom: 120%;
     }
         
     body {
@@ -233,6 +233,11 @@ blockquote.important::before {
 
 
 /************ kbd keys (%keyname%) ***********/
+kbd {
+  background-color: grey;
+  box-shadow: 1px 1px lightgrey;
+}
+
 kbd[command]::before {
   content: "⌘"
 }
