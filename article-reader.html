@@ -18,6 +18,10 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 
     <style>
+    html {
+        zoom: 150%;
+    }
+        
     body {
         background: #1e1e1e;
         color: #eee;
@@ -325,11 +329,25 @@ blockquote.important::before {
                 level: 'inline',
                 start(src) { return src.indexOf('---'); },
                 tokenizer(src) {
-                    const m = /^---([^=\n]+)---/.exec(src);
+                    const m = /^---([^=\n]+)---\s*$/.exec(src);
                     if (!m) return;
                     return { type: 'filename', raw: m[0], text: m[1] };
                 },
                 renderer(token) { return `<span class="filename">${token.text}</span>`; }
+            }]
+        });
+        
+        marked.use({
+            extensions: [{
+                name: 'kbd',
+                level: 'inline',
+                start(src) { return src.indexOf('%'); },
+                tokenizer(src) {
+                    const m = /^%([a-zA-Z]+)%/.exec(src);
+                    if (!m) return;
+                    return { type: 'kbd', raw: m[0], text: m[1] };
+                },
+                renderer(token) { return `<kbd ${token.text}></kbd>`; }
             }]
         });
 

@@ -1,0 +1,33 @@
+kbd[command]::before {
+  content: "⌘"
+}
+
+kbd[shift]::before {
+  content: "⇧"
+}
+
+kbd[capslock]::before {
+  content: "⇪"
+}
+
+kbd[delete]::before {
+  content: "⌫"
+}
+
+kbd[option]::before {
+  content: "⌥"
+}
+
+kbd[control]::before {
+  content: "⌃"
+}
+
+kbd[tab]::before {
+  content: "⇥"
+}
+
+kbd[space]::before {
+  content: "␣"
+}
+
+
