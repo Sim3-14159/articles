@@ -234,8 +234,8 @@ blockquote.important::before {
 
 /************ kbd keys (%keyname%) ***********/
 kbd {
-  background-color: grey;
-  box-shadow: 1px 1px lightgrey;
+  background-color: gray;
+  box-shadow: 1px 1px lightgray;
 }
 
 kbd[command]::before {
