@@ -1,0 +1,367 @@
+<!doctype HTML>
+<meta charset="UTF-8">
+<head>
+<link rel="stylesheet" href="../style.css">
+</head>
+<div id="content"><h1 id="css-is-a-programming-language">CSS is a Programming Language</h1>
+<p>People sometimes will argue that HTML is a programming language. There are a lot of different definitions of a programming language, but loosely it's something like "a bunch of symbols or words that can cause calculations or decisions to be made."</p>
+<blockquote class="note"><p>You could probably also argue that a programming language has to allow the input and output of those calculations/decisions. </p></blockquote><p>Does HTML qualify? No; HTML is a method of storing data, and also a method of displaying it. HTML doesn't have any way to calculate anything, even by editing the source file.</p>
+<p>This is where I was thinking about CSS (specifically, modern CSS)—which even though almost nobody argues that it is a programming language—has some features that you would find in a programming language. The <code>calc</code> function can perform simple calculations, and the <code>var</code> function can retrieve data, which helps with output.</p>
+<p>Now, this isn't a very good argument but I'm using it anyway: the first thing most beginner programmers will create is a simple calculator. If you can create a simple calculator using some form of text, then you can reasonably call it a programming language. This isn't both ways though; just because you <em>can't</em> create a calculator in a programming language doesn't mean it isn't one.</p>
+<p>I've used AI to make a calculator with only CSS and HTML below (because I know <em>that</em> CSS could do it, I just didn't know the exact syntax to get it to do that). You may argue that I'm using HTML too; you'd be right, but the HTML isn't doing any calculations, it's just a means of showing the output, and getting input. That's similar to saying the following.</p>
+<blockquote class="quote"><p>SQL isn't a real programming language because it can't output anything without having a database to output to.</p></blockquote><p>And to that I would counter that a database is just a way of storing/outputting the information, just like HTML.</p>
+<p>Anyhow, here's a very simple but 100% functional calculator, with all the logic programmed entirely in CSS.</p>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSS Calculator</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: system-ui, sans-serif;
+    background: #171923;
+    color: white;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+  }
+  .calculator {
+    width: 500px;
+    background: #252938;
+    padding: 24px;
+    border-radius: 18px;
+  }
+  h2 {
+    text-align: center;
+    margin-top: 0;
+  }
+  .display {
+    background: #11141c;
+    padding: 18px;
+    border-radius: 10px;
+    text-align: right;
+    margin-bottom: 20px;
+  }
+  .expression {
+    color: #aab4cc;
+    font-size: 20px;
+    min-height: 30px;
+  }
+  .answer {
+    color: #75e0a2;
+    font-size: 42px;
+    font-weight: bold;
+    min-height: 52px;
+  }
+  .controls {
+    display: flex;
+    gap: 14px;
+  }
+  .group {
+    flex: 1;
+  }
+  .group strong {
+    display: block;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  input {
+    display: none;
+  }
+  label {
+    display: block;
+    padding: 9px;
+    margin: 5px 0;
+    text-align: center;
+    background: #393f52;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  label:hover {
+    background: #4b536b;
+  }
+  input:checked + label {
+    background: #5478ee;
+  }
+  /* Initial values */
+  .calculator {
+    --a: 0;
+    --b: 0;
+    --sum: 0;
+  }
+  /* First operand */
+  #a0:checked ~ .calculator { --a: 0; }
+  #a1:checked ~ .calculator { --a: 1; }
+  #a2:checked ~ .calculator { --a: 2; }
+  #a3:checked ~ .calculator { --a: 3; }
+  #a4:checked ~ .calculator { --a: 4; }
+  #a5:checked ~ .calculator { --a: 5; }
+  #a6:checked ~ .calculator { --a: 6; }
+  #a7:checked ~ .calculator { --a: 7; }
+  #a8:checked ~ .calculator { --a: 8; }
+  #a9:checked ~ .calculator { --a: 9; }
+  /* Second operand */
+  #b0:checked ~ .calculator { --b: 0; }
+  #b1:checked ~ .calculator { --b: 1; }
+  #b2:checked ~ .calculator { --b: 2; }
+  #b3:checked ~ .calculator { --b: 3; }
+  #b4:checked ~ .calculator { --b: 4; }
+  #b5:checked ~ .calculator { --b: 5; }
+  #b6:checked ~ .calculator { --b: 6; }
+  #b7:checked ~ .calculator { --b: 7; }
+  #b8:checked ~ .calculator { --b: 8; }
+  #b9:checked ~ .calculator { --b: 9; }
+  /* Calculate */
+  .calculator {
+    --sum: calc(var(--a) + var(--b));
+  }
+  /* Display operands */
+  .expression::before {
+    content: counter(first) " + " counter(second) " =";
+    counter-reset: first var(--a) second var(--b);
+  }
+  /* Display result */
+  .answer {
+    counter-reset: result var(--sum);
+  }
+  .answer::before {
+    content: counter(result);
+  }
+</style>
+
+
+<!-- First number -->
+<input type="radio" name="a" id="a0" checked="">
+<input type="radio" name="a" id="a1">
+<input type="radio" name="a" id="a2">
+<input type="radio" name="a" id="a3">
+<input type="radio" name="a" id="a4">
+<input type="radio" name="a" id="a5">
+<input type="radio" name="a" id="a6">
+<input type="radio" name="a" id="a7">
+<input type="radio" name="a" id="a8">
+<input type="radio" name="a" id="a9">
+<!-- Second number -->
+<input type="radio" name="b" id="b0" checked="">
+<input type="radio" name="b" id="b1">
+<input type="radio" name="b" id="b2">
+<input type="radio" name="b" id="b3">
+<input type="radio" name="b" id="b4">
+<input type="radio" name="b" id="b5">
+<input type="radio" name="b" id="b6">
+<input type="radio" name="b" id="b7">
+<input type="radio" name="b" id="b8">
+<input type="radio" name="b" id="b9">
+<div class="calculator">
+  <h2>CSS Calculator</h2>
+  <div class="display">
+    <div class="expression"></div>
+    <div class="answer"></div>
+  </div>
+  <div class="controls">
+    <div class="group">
+      <strong>First number</strong>
+      <label for="a0">0</label>
+      <label for="a1">1</label>
+      <label for="a2">2</label>
+      <label for="a3">3</label>
+      <label for="a4">4</label>
+      <label for="a5">5</label>
+      <label for="a6">6</label>
+      <label for="a7">7</label>
+      <label for="a8">8</label>
+      <label for="a9">9</label>
+    </div>
+    <div class="group">
+      <strong>Second number</strong>
+      <label for="b0">0</label>
+      <label for="b1">1</label>
+      <label for="b2">2</label>
+      <label for="b3">3</label>
+      <label for="b4">4</label>
+      <label for="b5">5</label>
+      <label for="b6">6</label>
+      <label for="b7">7</label>
+      <label for="b8">8</label>
+      <label for="b9">9</label>
+    </div>
+  </div>
+</div>
+
+<p>Here's the source code.</p>
+<div class="code-block" data-lang="HTML"><span class="lang-label">HTML</span><button class="copy-btn"><img src="https://img.icons8.com/?size=50&amp;id=86216&amp;format=png"></button><pre><code class="language-html hljs language-xml" data-highlighted="yes"><span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="language-css">
+  * { <span class="hljs-attribute">box-sizing</span>: border-box; }
+  <span class="hljs-selector-tag">body</span> {
+    <span class="hljs-attribute">font-family</span>: system-ui, sans-serif;
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#171923</span>;
+    <span class="hljs-attribute">color</span>: white;
+    <span class="hljs-attribute">min-height</span>: <span class="hljs-number">100vh</span>;
+    <span class="hljs-attribute">display</span>: grid;
+    place-items: center;
+  }
+  <span class="hljs-selector-class">.calculator</span> {
+    <span class="hljs-attribute">width</span>: <span class="hljs-number">500px</span>;
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#252938</span>;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">24px</span>;
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">18px</span>;
+  }
+  <span class="hljs-selector-tag">h2</span> {
+    <span class="hljs-attribute">text-align</span>: center;
+    <span class="hljs-attribute">margin-top</span>: <span class="hljs-number">0</span>;
+  }
+  <span class="hljs-selector-class">.display</span> {
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#11141c</span>;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">18px</span>;
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">10px</span>;
+    <span class="hljs-attribute">text-align</span>: right;
+    <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">20px</span>;
+  }
+  <span class="hljs-selector-class">.expression</span> {
+    <span class="hljs-attribute">color</span>: <span class="hljs-number">#aab4cc</span>;
+    <span class="hljs-attribute">font-size</span>: <span class="hljs-number">20px</span>;
+    <span class="hljs-attribute">min-height</span>: <span class="hljs-number">30px</span>;
+  }
+  <span class="hljs-selector-class">.answer</span> {
+    <span class="hljs-attribute">color</span>: <span class="hljs-number">#75e0a2</span>;
+    <span class="hljs-attribute">font-size</span>: <span class="hljs-number">42px</span>;
+    <span class="hljs-attribute">font-weight</span>: bold;
+    <span class="hljs-attribute">min-height</span>: <span class="hljs-number">52px</span>;
+  }
+  <span class="hljs-selector-class">.controls</span> {
+    <span class="hljs-attribute">display</span>: flex;
+    <span class="hljs-attribute">gap</span>: <span class="hljs-number">14px</span>;
+  }
+  <span class="hljs-selector-class">.group</span> {
+    <span class="hljs-attribute">flex</span>: <span class="hljs-number">1</span>;
+  }
+  <span class="hljs-selector-class">.group</span> <span class="hljs-selector-tag">strong</span> {
+    <span class="hljs-attribute">display</span>: block;
+    <span class="hljs-attribute">margin-bottom</span>: <span class="hljs-number">8px</span>;
+    <span class="hljs-attribute">text-align</span>: center;
+  }
+  <span class="hljs-selector-tag">input</span> {
+    <span class="hljs-attribute">display</span>: none;
+  }
+  <span class="hljs-selector-tag">label</span> {
+    <span class="hljs-attribute">display</span>: block;
+    <span class="hljs-attribute">padding</span>: <span class="hljs-number">9px</span>;
+    <span class="hljs-attribute">margin</span>: <span class="hljs-number">5px</span> <span class="hljs-number">0</span>;
+    <span class="hljs-attribute">text-align</span>: center;
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#393f52</span>;
+    <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">7px</span>;
+    <span class="hljs-attribute">cursor</span>: pointer;
+    <span class="hljs-attribute">transition</span>: background .<span class="hljs-number">15s</span>;
+  }
+  <span class="hljs-selector-tag">label</span><span class="hljs-selector-pseudo">:hover</span> {
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#4b536b</span>;
+  }
+  <span class="hljs-selector-tag">input</span><span class="hljs-selector-pseudo">:checked</span> + <span class="hljs-selector-tag">label</span> {
+    <span class="hljs-attribute">background</span>: <span class="hljs-number">#5478ee</span>;
+  }
+  <span class="hljs-comment">/* Initial values */</span>
+  <span class="hljs-selector-class">.calculator</span> {
+    <span class="hljs-attr">--a</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attr">--b</span>: <span class="hljs-number">0</span>;
+    <span class="hljs-attr">--sum</span>: <span class="hljs-number">0</span>;
+  }
+  <span class="hljs-comment">/* First operand */</span>
+  <span class="hljs-selector-id">#a0</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--a</span>: <span class="hljs-number">0</span>; }
+  <span class="hljs-selector-id">#a1</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--a</span>: <span class="hljs-number">1</span>; }
+  <span class="hljs-selector-id">#a2</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--a</span>: <span class="hljs-number">2</span>; }
+  <span class="hljs-selector-id">#a3</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--a</span>: <span class="hljs-number">3</span>; }
+  <span class="hljs-selector-id">#a4</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--a</span>: <span class="hljs-number">4</span>; }
+  <span class="hljs-selector-id">#a5</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--a</span>: <span class="hljs-number">5</span>; }
+  <span class="hljs-selector-id">#a6</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--a</span>: <span class="hljs-number">6</span>; }
+  <span class="hljs-selector-id">#a7</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--a</span>: <span class="hljs-number">7</span>; }
+  <span class="hljs-selector-id">#a8</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--a</span>: <span class="hljs-number">8</span>; }
+  <span class="hljs-selector-id">#a9</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--a</span>: <span class="hljs-number">9</span>; }
+  <span class="hljs-comment">/* Second operand */</span>
+  <span class="hljs-selector-id">#b0</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--b</span>: <span class="hljs-number">0</span>; }
+  <span class="hljs-selector-id">#b1</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--b</span>: <span class="hljs-number">1</span>; }
+  <span class="hljs-selector-id">#b2</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--b</span>: <span class="hljs-number">2</span>; }
+  <span class="hljs-selector-id">#b3</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--b</span>: <span class="hljs-number">3</span>; }
+  <span class="hljs-selector-id">#b4</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--b</span>: <span class="hljs-number">4</span>; }
+  <span class="hljs-selector-id">#b5</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--b</span>: <span class="hljs-number">5</span>; }
+  <span class="hljs-selector-id">#b6</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--b</span>: <span class="hljs-number">6</span>; }
+  <span class="hljs-selector-id">#b7</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--b</span>: <span class="hljs-number">7</span>; }
+  <span class="hljs-selector-id">#b8</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--b</span>: <span class="hljs-number">8</span>; }
+  <span class="hljs-selector-id">#b9</span><span class="hljs-selector-pseudo">:checked</span> ~ <span class="hljs-selector-class">.calculator</span> { <span class="hljs-attr">--b</span>: <span class="hljs-number">9</span>; }
+  <span class="hljs-comment">/* Calculate */</span>
+  <span class="hljs-selector-class">.calculator</span> {
+    <span class="hljs-attr">--sum</span>: <span class="hljs-built_in">calc</span>(<span class="hljs-built_in">var</span>(--a) + <span class="hljs-built_in">var</span>(--b));
+  }
+  <span class="hljs-comment">/* Display operands */</span>
+  <span class="hljs-selector-class">.expression</span><span class="hljs-selector-pseudo">::before</span> {
+    <span class="hljs-attribute">content</span>: <span class="hljs-built_in">counter</span>(first) <span class="hljs-string">" + "</span> <span class="hljs-built_in">counter</span>(second) <span class="hljs-string">" ="</span>;
+    <span class="hljs-attribute">counter-reset</span>: first <span class="hljs-built_in">var</span>(--a) second <span class="hljs-built_in">var</span>(--b);
+  }
+  <span class="hljs-comment">/* Display result */</span>
+  <span class="hljs-selector-class">.answer</span> {
+    <span class="hljs-attribute">counter-reset</span>: result <span class="hljs-built_in">var</span>(--sum);
+  }
+  <span class="hljs-selector-class">.answer</span><span class="hljs-selector-pseudo">::before</span> {
+    <span class="hljs-attribute">content</span>: <span class="hljs-built_in">counter</span>(result);
+  }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- First number --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"a"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"a0"</span> <span class="hljs-attr">checked</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"a"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"a1"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"a"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"a2"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"a"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"a3"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"a"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"a4"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"a"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"a5"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"a"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"a6"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"a"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"a7"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"a"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"a8"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"a"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"a9"</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- Second number --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"b"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"b0"</span> <span class="hljs-attr">checked</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"b"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"b1"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"b"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"b2"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"b"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"b3"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"b"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"b4"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"b"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"b5"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"b"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"b6"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"b"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"b7"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"b"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"b8"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"radio"</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"b"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"b9"</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"calculator"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">h2</span>&gt;</span>CSS Calculator<span class="hljs-tag">&lt;/<span class="hljs-name">h2</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"display"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"expression"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"answer"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"controls"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"group"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span>First number<span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"a0"</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"a1"</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"a2"</span>&gt;</span>2<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"a3"</span>&gt;</span>3<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"a4"</span>&gt;</span>4<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"a5"</span>&gt;</span>5<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"a6"</span>&gt;</span>6<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"a7"</span>&gt;</span>7<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"a8"</span>&gt;</span>8<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"a9"</span>&gt;</span>9<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"group"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span>Second number<span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"b0"</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"b1"</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"b2"</span>&gt;</span>2<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"b3"</span>&gt;</span>3<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"b4"</span>&gt;</span>4<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"b5"</span>&gt;</span>5<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"b6"</span>&gt;</span>6<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"b7"</span>&gt;</span>7<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"b8"</span>&gt;</span>8<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"b9"</span>&gt;</span>9<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+</code></pre></div>
+<p>CSS is not Turing-complete, but it can at least do some of these simple calculations. Before becoming Turing-complete in 1999, SQL was considered a programming language. In fact, there is no rule that a programming language has to be Turing-complete to be a programming language. It's just that Turing-complete languages are usually much more useful than ones that are not.</p>
+</div>
